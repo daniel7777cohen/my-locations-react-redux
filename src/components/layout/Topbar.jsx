@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, useHistory, withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { APPEND_ACTION_TO_TITLE } from '../../store/actions/constants';
@@ -61,6 +61,9 @@ const Topbar = () => {
   const [currentAction, setCurrentAction] = useState(null);
   const [isCurrentCategory, setIsCurrentCategory] = useState(false);
   const dispatch = useDispatch();
+  const history = useHistory();
+  const { pathname } = history.location;
+  const isHomePage = pathname === '/';
 
   useEffect(() => {
     setIsCurrentCategory(currentCategory !== null);
@@ -79,7 +82,7 @@ const Topbar = () => {
   return (
     <TopBar className="display-user">
       <Title>{title}</Title>
-      {
+      {!isHomePage && (
         <ActionsContainer>
           <Action
             isCurrentCategory={isCurrentCategory}
@@ -106,7 +109,7 @@ const Topbar = () => {
             DELETE
           </Action>
         </ActionsContainer>
-      }
+      )}
     </TopBar>
   );
 };

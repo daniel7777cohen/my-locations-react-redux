@@ -19,7 +19,7 @@ const WarningButton = styled.button`
   padding: 10px;
   border: none;
   cursor: pointer;
-  border-radius: 5%;
+  border-radius: 12px;
   background-color: ${({ deleteButton }) =>
     deleteButton ? '#c70a0a' : '#377afe'};
   margin: 10px;

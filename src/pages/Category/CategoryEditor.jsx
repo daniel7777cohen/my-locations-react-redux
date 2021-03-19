@@ -43,7 +43,7 @@ const Button = styled.button`
   padding: 10px;
   border: none;
   cursor: pointer;
-  border-radius: 5%;
+  border-radius: 12px;
   background-color: #4f94fd;
   opacity: ${({ isLoading }) => (isLoading ? '40%' : 'none')};
 
@@ -146,7 +146,7 @@ const CategoryEditor = ({ source }) => {
           type="text"
           onChange={(e) => handleChange(e)}
           placeholder={`${source} ${
-            currentCategory ? currentCategory.name : 'a category'
+            currentCategory ? `"${currentCategory.name}"` : 'a category'
           } name...`}
           value={name}
           required

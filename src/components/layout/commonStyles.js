@@ -14,12 +14,16 @@ export const GridItem = styled.div`
   justify-content: center;
   display: flex;
   flex-direction: column;
-  text-align: ${({ isCategoriesDisplay }) => (isCategoriesDisplay ? 'center' : 'start')};
+  text-align: ${({ isCategoriesDisplay }) =>
+    isCategoriesDisplay ? 'center' : 'start'};
   padding: 5px;
   margin: 5px;
-  width: 300px;
-  min-height: 150px;
-  cursor: ${({ isSelected,isCategoriesDisplay }) => (isSelected ? 'unset' : ` ${isCategoriesDisplay? 'pointer' :'unset' } `)};
+  width: ${({ isCategoriesDisplay }) =>
+    isCategoriesDisplay ? '220px' : '300px'};
+  min-height: ${({ isCategoriesDisplay }) =>
+    isCategoriesDisplay ? '60px' : '150px'};
+  cursor: ${({ isSelected, isCategoriesDisplay }) =>
+    isSelected ? 'unset' : ` ${isCategoriesDisplay ? 'pointer' : 'unset'} `};
   border: ${({ isSelected }) =>
     isSelected ? '9px double #377afe' : '7px double #8f949c'};
   border-radius: 9px;
@@ -27,7 +31,7 @@ export const GridItem = styled.div`
   font-weight: ${({ isSelected }) => (isSelected ? 'bold' : 'normal')};
 
   @media (max-width: 768px) {
-    max-width: 250px;
-    min-height: 150px;
+    max-width: ${({ isCategoriesDisplay }) =>
+      isCategoriesDisplay ? 'auto' : '250px'};
   }
 `;

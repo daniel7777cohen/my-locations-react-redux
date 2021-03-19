@@ -11,12 +11,8 @@ export const Button = styled.button`
   padding: 5px;
   border: none;
   cursor: pointer;
-  border-radius: 5%;
+  border-radius: 12px;
   background-color: #4f94fd;
-
-  @media (max-width: 768px) {
-    margin-top: 30px;
-  }
 
   &:focus {
     outline: none;
@@ -24,7 +20,7 @@ export const Button = styled.button`
 `;
 
 const Alert = styled.div`
-  margin: 20px;
+  margin: 20px 5px;
 `;
 const Categories = () => {
   const [selectedCaregory, setSelectedCategory] = useState(null);
@@ -54,12 +50,13 @@ const Categories = () => {
         </GridContainer>
       ) : (
         <Alert>
-          You have no categories to display. <br />
+          You have no categories to display.
+          <br />
           Click
           <Button onClick={() => history.push('/categories/add-category')}>
             Here
           </Button>
-          to add a new category
+          to add a new category.
         </Alert>
       )}
     </>
