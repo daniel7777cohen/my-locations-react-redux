@@ -74,13 +74,14 @@ const getIsNameValid = (newCategoryName) => {
     );
     return false;
   }
-  return getIsNameExist(newCategoryName);
+
+  const { categories } = store.getState().categoriesReducer;
+  if (categories.length === 0) return true;
+
+  return getIsNameExist(categories, newCategoryName);
 };
 
-const getIsNameExist = (newCategoryName) => {
-  const { categories } = store.getState().categoriesReducer;
-  if (categories.length === 0) return false;
-
+const getIsNameExist = (categories, newCategoryName) => {
   //prevent duplicates
   const isNameExsists = categories.find(
     (category) => category.name === newCategoryName
