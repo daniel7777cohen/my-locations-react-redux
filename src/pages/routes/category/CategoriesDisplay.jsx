@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentCategory } from '../../store/actions/categories-actions';
+import { setCurrentCategory } from '../../../store/actions/categories-actions';
 import { useHistory } from 'react-router-dom';
-import { GridContainer, GridItem } from '../../components/layout/commonStyles';
+import {
+  Alert,
+  GridContainer,
+  GridItem,
+} from '../../../components/layout/commonStyles';
+import { RESET_CURRENT_CATEGORY } from '../../../store/actions/constants';
 
 export const Button = styled.button`
   margin: 10px;
@@ -19,18 +24,22 @@ export const Button = styled.button`
   }
 `;
 
-const Alert = styled.div`
-  margin: 20px 5px;
-`;
 const Categories = () => {
   const [selectedCaregory, setSelectedCategory] = useState(null);
-  const { categories } = useSelector((state) => state.categoriesReducer);
+  const { categories, currentCategory } = useSelector(
+    (state) => state.categoriesReducer
+  );
   const dispatch = useDispatch();
   const history = useHistory();
 
   const handleClick = (i, category) => {
-    setSelectedCategory(i);
-    dispatch(setCurrentCategory(category));
+    if (selectedCaregory === i) {
+      setSelectedCategory(null);
+      dispatch({ type: RESET_CURRENT_CATEGORY });
+    } else {
+      setSelectedCategory(i);
+      dispatch(setCurrentCategory(category));
+    }
   };
 
   return (
@@ -40,7 +49,10 @@ const Categories = () => {
           {categories.map((category, i) => (
             <GridItem
               key={i}
-              isSelected={selectedCaregory === i}
+              isSelected={
+                selectedCaregory === i ||
+                (currentCategory && currentCategory.id === category.id)
+              }
               isCategoriesDisplay
               onClick={() => handleClick(i, category)}
             >

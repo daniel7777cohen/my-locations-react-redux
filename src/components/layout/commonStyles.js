@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const GridContainer = styled.div`
@@ -34,4 +35,66 @@ export const GridItem = styled.div`
     max-width: ${({ isCategoriesDisplay }) =>
       isCategoriesDisplay ? 'auto' : '250px'};
   }
+`;
+
+export const RedirectLink = styled(Link)`
+  text-align: center;
+  margin: 10px auto;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 12px;
+  background-color: #4f94fd;
+  text-decoration: none;
+  width: 250px;
+
+  @media (max-width: 768px) {
+    margin: 10px auto;
+  }
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const Button = styled.button`
+  display: block;
+  margin: 20px auto;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 12px;
+  background-color: #4f94fd;
+  opacity: ${({ isLoading }) => (isLoading ? '40%' : 'none')};
+  width: 150px;
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const Bold = styled.span`
+  font-weight: bold;
+`;
+
+export const Text = styled.span`
+  display: block;
+  margin: 10px 0;
+`;
+
+export const WarningButton = styled.button`
+  color: #fff;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 12px;
+  background-color: #c70a0a;
+  margin: 20px auto;
+  opacity: ${({ isLoading }) => (isLoading ? '40%' : 'none')};
+  width: 250px;
+`;
+
+export const Alert = styled.div`
+  margin: 20px auto;
 `;

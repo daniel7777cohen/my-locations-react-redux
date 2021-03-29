@@ -1,18 +1,21 @@
 import './App.css';
 import { useEffect } from 'react';
 import styled from 'styled-components';
-import Sidebar from './components/layout/Sidebar';
-import LayoutRouter from './components/layout/LayoutRouter';
+import BottomBar from './components/layout/BottomBar';
+import Topbar from './components/layout/Topbar';
+import LayoutRouter from './pages/routes/LayoutRouter';
 import { BrowserRouter as Router } from 'react-router-dom';
 import store from './store/store';
 import { Provider } from 'react-redux';
 import { getCategories } from './store/actions/categories-actions';
+import { getLocations } from './store/actions/locations-actions';
+import Alert from './components/layout/Alert';
 
 const Container = styled.div`
   background-color: #f0f2f5;
   display: flex;
+  flex-direction: column;
   height: 100%;
-  padding-bottom:60px;
 `;
 const Footer = styled.div`
   display: flex;
@@ -24,24 +27,31 @@ const Footer = styled.div`
   height: 60px;
   background-color: 10px;
   background-color: #f0f2f5;
-  text-align:center;
-  font-size:12px;
-  z-index:1;
+  text-align: center;
+  font-size: 12px;
+  z-index: 1;
   box-shadow: -20px 7px 18px 0px;
 `;
+
 
 function App() {
   useEffect(() => {
     store.dispatch(getCategories());
+    store.dispatch(getLocations());
   }, []);
 
   return (
     <Provider store={store}>
       <Container>
         <Router>
-          <Sidebar />
+        <Alert/>
+          <Topbar />
           <LayoutRouter />
-          <Footer>WellDone Assignment <br/>Using React Redux Styled-Components</Footer>
+          <BottomBar />
+          <Footer>
+            WellDone Assignment <br />
+            Using React Redux Styled-Components
+          </Footer>
         </Router>
       </Container>
     </Provider>

@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { Link, useHistory, withRouter } from 'react-router-dom';
+import { useHistory, withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
-import { APPEND_ACTION_TO_TITLE } from '../../store/actions/constants';
 
 const TopBar = styled.div`
   width: 100%;
@@ -29,15 +27,14 @@ const ActionsContainer = styled.div`
   }
 `;
 
-const Action = styled(({ isCurrentCategory, isSelected, ...props }) => (
-  <Link {...props} />
+const Action = styled(({ isAcive, isSelected, ...props }) => (
+  <span {...props} />
 ))`
-  opacity: ${({ isCurrentCategory }) => (isCurrentCategory ? 'unset' : '20%')};
+  opacity: ${({ isAcive }) => (isAcive ? 'unset' : '20%')};
   text-decoration: none;
   color: ${({ isSelected }) => (isSelected ? '#377afe' : 'black')};
   font-weight: ${({ isSelected }) => (isSelected ? 'bold' : 'normal')};
-  pointer-events: ${({ isCurrentCategory }) =>
-    isCurrentCategory ? 'all' : 'none'};
+  pointer-events: ${({ isAcive }) => (isAcive ? 'all' : 'none')};
   cursor: ${({ isSelected }) => (isSelected ? 'unset' : 'pointer')};
   margin: 0 10px;
 `;
@@ -55,56 +52,124 @@ const Title = styled.span`
 `;
 
 const Topbar = () => {
-  const { currentCategory, title } = useSelector(
-    (state) => state.categoriesReducer
-  );
-  const [currentAction, setCurrentAction] = useState(null);
+  const { currentCategory } = useSelector((state) => state.categoriesReducer);
+  const { currentLocation } = useSelector((state) => state.locationsReducer);
   const [isCurrentCategory, setIsCurrentCategory] = useState(false);
-  const dispatch = useDispatch();
+  const [isCurrentLocation, setIsCurrentLocation] = useState(false);
+  const [title, setTitle] = useState('');
   const history = useHistory();
   const { pathname } = history.location;
   const isHomePage = pathname === '/';
 
+  const getNewEntityPath = () => {
+    const pathRoot = pathname.split('/')[1];
+    if (pathRoot === 'locations') return '/locations/add-location';
+
+    if (pathRoot === 'categories') return '/categories/add-category';
+
+    return '/';
+  };
+
   useEffect(() => {
     setIsCurrentCategory(currentCategory !== null);
-    if (!currentCategory) {
-      setCurrentAction(null);
-    }
-  }, [currentCategory]);
+    setIsCurrentLocation(currentLocation !== null);
+  }, [currentCategory, currentLocation]);
 
-  const handleClick = (text) => {
-    setCurrentAction(text);
-    dispatch({
-      type: APPEND_ACTION_TO_TITLE,
-      payload: text,
-    });
+  const getTitle = useCallback(() => {
+    switch (pathname) {
+      case '/':
+        return 'Hi, User';
+      case '/categories/view-categories':
+        return 'Categories Display';
+      case '/locations/view-locations':
+        return 'Locations Display';
+      case '/categories/add-category':
+        return 'Add a category';
+      case '/locations/add-location':
+        return 'Add a location';
+      default:
+        break;
+    }
+    if (currentCategory) {
+      return currentCategory.name.toUpperCase();
+    } else if (currentLocation) {
+      return currentLocation.name.toUpperCase();
+    }
+
+    return '';
+  }, [pathname, currentCategory, currentLocation]);
+
+  useEffect(() => {
+    const title = getTitle();
+    setTitle(title);
+  }, [getTitle]);
+
+  const handleClick = (path) => {
+    history.push(path);
   };
+
   return (
-    <TopBar className="display-user">
+    <TopBar>
       <Title>{title}</Title>
       {!isHomePage && (
         <ActionsContainer>
           <Action
-            isCurrentCategory={isCurrentCategory}
-            to={`/categories/view-category`}
-            onClick={() => handleClick('view')}
-            isSelected={isCurrentCategory && currentAction === 'view'}
+            isAcive={true}
+            onClick={() => {
+              handleClick(getNewEntityPath());
+            }}
+            isSelected={
+              pathname === '/categories/add-category' ||
+              pathname === '/locations/add-location'
+            }
+          >
+            NEW
+          </Action>
+          <Action
+            isAcive={isCurrentCategory || isCurrentLocation}
+            onClick={() =>
+              handleClick(
+                isCurrentCategory
+                  ? '/categories/view-category'
+                  : '/locations/view-location'
+              )
+            }
+            isSelected={
+              pathname === '/categories/view-category' ||
+              pathname === '/locations/view-location'
+            }
           >
             VIEW
           </Action>
           <Action
-            isCurrentCategory={isCurrentCategory}
-            to={`/categories/edit-category`}
-            onClick={() => handleClick('edit')}
-            isSelected={isCurrentCategory && currentAction === 'edit'}
+            isAcive={isCurrentCategory || isCurrentLocation}
+            onClick={() =>
+              handleClick(
+                isCurrentCategory
+                  ? '/categories/edit-category'
+                  : '/locations/edit-location'
+              )
+            }
+            isSelected={
+              pathname === '/categories/edit-category' ||
+              pathname === '/locations/edit-location'
+            }
           >
             EDIT
           </Action>
           <Action
-            isCurrentCategory={isCurrentCategory}
-            to={`/categories/delete-category`}
-            onClick={() => handleClick('delete')}
-            isSelected={isCurrentCategory && currentAction === 'delete'}
+            isAcive={isCurrentCategory || isCurrentLocation}
+            onClick={() =>
+              handleClick(
+                isCurrentCategory
+                  ? '/categories/delete-category'
+                  : '/locations/delete-location'
+              )
+            }
+            isSelected={
+              pathname === '/categories/delete-category' ||
+              pathname === '/locations/delete-location'
+            }
           >
             DELETE
           </Action>

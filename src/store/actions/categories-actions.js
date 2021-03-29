@@ -1,8 +1,7 @@
 import {
-  LOAD_DATA,
   ADD_CATEGORY,
   SET_CURRENT_CATEGORY,
-  EDIT_CATEGORY,
+  SET_CATEGORIES,
   DELETE_CATEGORY,
 } from './constants';
 import { v4 as uuidv4 } from 'uuid';
@@ -12,7 +11,7 @@ export const getCategories = () => (dispatch) => {
   const fetchedCategories = JSON.parse(localStorage.getItem('categories'));
   if (fetchedCategories && fetchedCategories.length > 0) {
     dispatch({
-      type: LOAD_DATA,
+      type: SET_CATEGORIES,
       payload: fetchedCategories,
     });
   }
@@ -51,13 +50,13 @@ export const editCategory = (categoryId, newName) => (dispatch) => {
   categories[editedCategoryIndex].name = newName;
   localStorage.setItem('categories', JSON.stringify(categories));
 
-  const newCurrentCategory = categories[editedCategoryIndex];
-
   dispatch({
-    type: EDIT_CATEGORY,
-    payload: { newCategories: categories, newCurrentCategory },
+    type: SET_CATEGORIES,
+    payload: categories,
   });
 
+  dispatch(setCurrentCategory(categories[editedCategoryIndex]));
+  
   dispatch(setAlert(`Category edited successfully`, 'success'));
 };
 
