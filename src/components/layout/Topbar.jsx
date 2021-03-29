@@ -40,11 +40,10 @@ const Action = styled(({ isAcive, isSelected, ...props }) => (
 `;
 
 const Title = styled.span`
-  margin-left: 20px;
   color: #377afe;
   font-weight: bold;
   width: 400px;
-
+  text-align: center;
   @media (max-width: 768px) {
     width: auto;
     margin: 10px 0 5px 0;
@@ -110,7 +109,7 @@ const Topbar = () => {
 
   return (
     <TopBar>
-      <Title>{title}</Title>
+      <Title isHomePage>{title}</Title>
       {!isHomePage && (
         <ActionsContainer>
           <Action
