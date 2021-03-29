@@ -96,5 +96,7 @@ export const WarningButton = styled.button`
 `;
 
 export const Alert = styled.div`
-  margin: 20px auto;
+  padding: 20px;
+  line-height: 1.3;
+  margin: 0 auto;
 `;

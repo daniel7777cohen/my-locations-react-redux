@@ -5,7 +5,11 @@ import Spinner from '../../../components/layout/Spinner';
 import Select from 'react-select';
 import { setAlert } from '../../../store/actions/alert';
 import { Redirect } from 'react-router-dom';
-import { Button, RedirectLink } from '../../../components/layout/commonStyles';
+import {
+  Alert,
+  Button,
+  RedirectLink,
+} from '../../../components/layout/commonStyles';
 import GoogleMaps from '../../../components/GoogleMaps';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 
@@ -90,6 +94,8 @@ const LocationEditor = ({ source }) => {
     lat: 0,
     lng: 0,
   });
+
+  const hasCategories = categories.length > 0;
 
   const options = categories
     ? categories.map(({ id, name }) => {
@@ -211,106 +217,124 @@ const LocationEditor = ({ source }) => {
 
   return (
     <>
-      <RedirectLink to="/locations/view-locations">
-        Back To Locations ={'>'}
+      <RedirectLink
+        to={
+          hasCategories
+            ? `/locations/view-locations`
+            : '/categories/add-category'
+        }
+      >
+        {`${`${
+          hasCategories ? ' Back To Locations =>' : 'Add a Category =>'
+        }`}`}
       </RedirectLink>
-      <Form onSubmit={handleSubmit}>
-        <FormGroup>
-          <PlaceHolder>Name</PlaceHolder>
-          <Input
-            type="text"
-            onChange={(e) => handleChange(e)}
-            placeholder={`${source} a new name...`}
-            value={formData['name']}
-            name="name"
-            required
-          />
-        </FormGroup>
-        <FormGroup>
-          <PlaceHolder>Address</PlaceHolder>
-          <GooglePlacesAutocomplete
-            selectProps={{
-              onChange: handleAddressChange,
-              placeholder:
-                source === 'edit'
-                  ? currentLocation.address
-                  : 'enter a valid address',
-            }}
-          />
-          <input
-            onChange={() => undefined}
-            tabIndex={-1}
-            autoComplete="off"
-            style={{ opacity: 0, height: 0 }}
-            required
-            value={formData['address']}
-          />
-        </FormGroup>
+      {!hasCategories ? (
+        <Alert>
+          You have no categories to define for a new location.
+          <br />
+          Please create a new category first.
+        </Alert>
+      ) : (
+        <Form onSubmit={handleSubmit}>
+          <FormGroup>
+            <PlaceHolder>Name</PlaceHolder>
+            <Input
+              type="text"
+              onChange={(e) => handleChange(e)}
+              placeholder={`${source} a new name...`}
+              value={formData['name']}
+              name="name"
+              required
+            />
+          </FormGroup>
+          <FormGroup>
+            <PlaceHolder>Address</PlaceHolder>
+            <GooglePlacesAutocomplete
+              selectProps={{
+                onChange: handleAddressChange,
+                placeholder:
+                  source === 'edit'
+                    ? currentLocation.address
+                    : 'enter a valid address',
+              }}
+            />
+            <input
+              onChange={() => undefined}
+              tabIndex={-1}
+              autoComplete="off"
+              style={{ opacity: 0, height: 0 }}
+              required
+              value={formData['address']}
+            />
+          </FormGroup>
 
-        <FormGroup>
-          <PlaceHolder>Category</PlaceHolder>
-          <Select
-            options={options}
-            styles={customStyles}
-            onChange={handleDropDown}
-            placeholder={`${
-              source === 'edit' ? currentLocation.category : 'select a category'
-            }`}
-          />
-          <input
-            onChange={() => undefined}
-            tabIndex={-1}
-            autoComplete="off"
-            style={{ opacity: 0, height: 0 }}
-            required
-            value={formData['categoryId']}
-          />
-        </FormGroup>
-        <FormGroup>
-          <PlaceHolder>Coordinates</PlaceHolder>
-          <CoordName>latitude</CoordName>
-          <Input
-            isCoord={true}
-            type="text"
-            onChange={(e) => handleChange(e)}
-            value={formData['lat']}
-            name="lat"
-            required
-            disabled
-          />
-          <CoordName> longtitude</CoordName>
-          <Input
-            isCoord={true}
-            type="text"
-            onChange={(e) => handleChange(e)}
-            value={formData['lng']}
-            name="lng"
-            required
-            disabled
-          />
-        </FormGroup>
-        <div style={{ margin: 'auto' }}>
-          <GoogleMaps
-            chosenLat={formData.lat}
-            chosenLng={formData.lng}
-            handleMapClick={handleMapClick}
-            containerElement={
-              <div style={{ height: '400px', width: '350px' }} />
-            }
-            mapElement={<div style={{ height: '100%' }} />}
-          />
-        </div>
-        <SubmitContainer>
-          <Button
-            disabled={isLoading || alert.length > 0}
-            isLoading={isLoading || alert.length > 0}
-            type="submit"
-          >
-            Submit
-          </Button>{' '}
-          {(isLoading || alert.lengh > 0) && <Spinner />}
-        </SubmitContainer>
-      </Form>
+          <FormGroup>
+            <PlaceHolder>Category</PlaceHolder>
+            <Select
+              options={options}
+              styles={customStyles}
+              onChange={handleDropDown}
+              placeholder={`${
+                source === 'edit'
+                  ? currentLocation.category
+                  : 'select a category'
+              }`}
+            />
+            <input
+              onChange={() => undefined}
+              tabIndex={-1}
+              autoComplete="off"
+              style={{ opacity: 0, height: 0 }}
+              required
+              value={formData['categoryId']}
+            />
+          </FormGroup>
+          <FormGroup>
+            <PlaceHolder>Coordinates</PlaceHolder>
+            <CoordName>latitude</CoordName>
+            <Input
+              isCoord={true}
+              type="text"
+              onChange={(e) => handleChange(e)}
+              value={formData['lat']}
+              name="lat"
+              required
+              disabled
+            />
+            <CoordName> longtitude</CoordName>
+            <Input
+              isCoord={true}
+              type="text"
+              onChange={(e) => handleChange(e)}
+              value={formData['lng']}
+              name="lng"
+              required
+              disabled
+            />
+          </FormGroup>
+          <div style={{ margin: 'auto' }}>
+            <GoogleMaps
+              chosenLat={formData.lat}
+              chosenLng={formData.lng}
+              handleMapClick={handleMapClick}
+              containerElement={
+                <div style={{ height: '400px', width: '350px' }} />
+              }
+              mapElement={<div style={{ height: '100%' }} />}
+            />
+          </div>
+          <SubmitContainer>
+            <Button
+              disabled={isLoading || alert.length > 0}
+              isLoading={isLoading || alert.length > 0}
+              type="submit"
+            >
+              Submit
+            </Button>{' '}
+            {(isLoading || alert.lengh > 0) && <Spinner />}
+          </SubmitContainer>
+        </Form>
+      )}
     </>
   );
 };
